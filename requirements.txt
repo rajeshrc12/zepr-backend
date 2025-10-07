@@ -1,2 +1,5 @@
 fastapi
+sqlmodel
+psycopg2-binary
 uvicorn
+python-dotenv
