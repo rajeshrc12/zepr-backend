@@ -8,8 +8,10 @@ from app.crud.task import (
     update_task,
     delete_task,
 )
+from app.core.dependencies import get_current_user
 
-router = APIRouter(prefix="/tasks", tags=["Tasks"])
+router = APIRouter(
+    prefix="/tasks", dependencies=[Depends(get_current_user)], tags=["Tasks"])
 
 
 @router.post("/")
