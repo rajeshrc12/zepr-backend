@@ -1,4 +1,4 @@
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi import APIRouter, Request
 from starlette.config import Config
 from starlette.requests import Request
@@ -6,9 +6,10 @@ from authlib.integrations.starlette_client import OAuth
 from app.core.database import get_session
 from fastapi import APIRouter, Depends
 from sqlmodel import Session
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserCreate
 from app.crud.user import get_or_create_user
 from app.utils.jwt import create_jwt
+from app.core.config import settings
 
 config = Config('.env')
 oauth = OAuth(config)
@@ -28,6 +29,16 @@ router = APIRouter()
 async def login(request: Request):
     redirect_uri = request.url_for('auth')
     return await oauth.google.authorize_redirect(request, redirect_uri)
+
+
+@router.get("/logout")
+def logout():
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}/")
+    response.delete_cookie(
+        key="token",
+        path="/",
+    )
+    return response
 
 
 @router.get('/auth')
@@ -52,8 +63,13 @@ async def auth(request: Request, session: Session = Depends(get_session)):
     # Step 4: Generate JWT
     jwt_token = create_jwt(user.id)
 
-    # Step 5: Return JSON to frontend
-    return {
-        "token": jwt_token,
-        "user": UserRead.model_validate(user)
-    }
+    response = RedirectResponse(url=f"{settings.FRONTEND_URL}/chat")
+    response.set_cookie(
+        key="token",
+        value=jwt_token,
+        httponly=True,
+        secure=True,
+        samesite="lax",
+        max_age=3600
+    )
+    return response

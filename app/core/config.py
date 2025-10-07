@@ -10,6 +10,7 @@ class Settings:
     SESSION_SECRET_KEY: str = os.getenv("SESSION_SECRET_KEY")
     ALGORITHM: str = os.getenv("ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+    FRONTEND_URL: int = os.getenv("FRONTEND_URL")
 
 
 settings = Settings()
