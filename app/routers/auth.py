@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from app.schemas.user import UserCreate
 from app.crud.user import get_or_create_user
-from app.utils.jwt import create_jwt
+from app.utils.jwt import create_jwt, decode_jwt
 from app.core.config import settings
 
 config = Config('.env')
@@ -27,6 +27,12 @@ router = APIRouter()
 
 @router.get('/login')
 async def login(request: Request):
+    token = request.cookies.get("token")
+
+    # If token exists, check validity
+    if token and decode_jwt(token):
+        return RedirectResponse(url=f"{settings.FRONTEND_URL}/chat")
+
     redirect_uri = request.url_for('auth')
     return await oauth.google.authorize_redirect(request, redirect_uri)
 

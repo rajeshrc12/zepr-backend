@@ -1,6 +1,9 @@
 from sqlmodel import Session, select
 from app.models.user import User
 from app.schemas.user import UserCreate
+from fastapi import HTTPException
+from sqlmodel import Session, select
+from app.models.user import User
 
 
 def get_or_create_user(user_data: UserCreate, session: Session) -> User:
@@ -20,4 +23,13 @@ def get_or_create_user(user_data: UserCreate, session: Session) -> User:
         session.commit()
         session.refresh(db_user)
 
+    return db_user
+
+
+def get_user(user_id: str, session: Session) -> User:
+    print("get_user")
+    statement = select(User).where(User.id == user_id)
+    db_user = session.exec(statement).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
     return db_user
