@@ -1,5 +1,13 @@
 from sqlmodel import SQLModel, create_engine, Session
 from app.core.config import settings
+import os
+
+# Ensure SQLite folder exists for dev
+if settings.ENV == "dev":
+    db_path = settings.DATABASE_URL_DEV.replace("sqlite:///", "")
+    db_dir = os.path.dirname(db_path)
+    if db_dir and not os.path.exists(db_dir):
+        os.makedirs(db_dir, exist_ok=True)
 
 engine = create_engine(settings.DATABASE_URL, echo=True)
 
