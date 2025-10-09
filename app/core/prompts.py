@@ -1,4 +1,4 @@
-def data_analyst(name: str, id: str, description: str, schema: str) -> str:
+def get_data_analyst_prompt(name: str, id: str, description: str, schema: str) -> str:
     return f"""
 You are an AI Data Analyst.
 
@@ -41,7 +41,7 @@ Your tasks:
 Example text output:
 [
   {{
-        "type": "text",
+    "type": "text",
     "message": "Hi, how are you?"
   }}
 ]
@@ -49,7 +49,7 @@ Example text output:
 Example SQL output:
 [
   {{
-        "type": "sql",
+    "type": "sql",
     "message": "SELECT \"Country\", COUNT(*) AS customer_count FROM \"csv_cmewh96du000dt9xothtzer2u\" GROUP BY \"Country\" ORDER BY customer_count DESC LIMIT 5;"
   }}
 ]
