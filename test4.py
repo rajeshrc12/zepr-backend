@@ -9,20 +9,15 @@ from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, Base
 # Load API key
 load_dotenv()
 
-# Define chat state
-
 
 class ChatState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
 
 
-# Initialize LLM (Gemini 2.5 Flash via OpenRouter)
 llm = ChatOpenAI(
     base_url="https://openrouter.ai/api/v1",
     model="google/gemini-2.5-flash",
 )
-
-# Define the chat node logic
 
 
 def chat_node(state: ChatState):
@@ -52,6 +47,9 @@ while True:
         print("Goodbye!")
         break
 
+    if query.lower() in ["list"]:
+        print(state["messages"])
+        continue
     # Add user input
     state["messages"].append(HumanMessage(content=query))
 
