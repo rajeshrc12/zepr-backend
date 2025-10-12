@@ -7,7 +7,11 @@ load_dotenv()
 class Settings:
     ENV: str = os.getenv("ENV", "dev")
     DATABASE_URL_DEV: str = os.getenv("DATABASE_URL_DEV", "sqlite:///./app.db")
+    DATABASE_CSV_URL_DEV: str = os.getenv(
+        "DATABASE_URL_DEV", "sqlite:///./csv.db")
+
     DATABASE_URL: str = os.getenv("DATABASE_URL")
+    DATABASE_CSV_URL: str = os.getenv("DATABASE_CSV_URL")
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
     SESSION_SECRET_KEY: str = os.getenv("SESSION_SECRET_KEY")
