@@ -1,5 +1,5 @@
-from app.database import DATABASE_URL  # get db url
-from app.models import Base  # import your models
+from app.core.database import DATABASE_URL  # get db url
+from app.models.task import Base  # import your models
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
