@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.crud.task import create_task, get_tasks, get_task, update_task, delete_task
 from app.schemas.task import Task, TaskUpdate, TaskCreate
+from app.worker.tasks import add
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -17,6 +18,12 @@ def add_task(task: TaskCreate, db: Session = Depends(get_db)):
 def read_tasks(db: Session = Depends(get_db)):
     """Retrieve all tasks"""
     return get_tasks(db)
+
+
+@router.get("/add")
+def call_add(x: int, y: int):
+    task = add.delay(x, y)
+    return {"task_id": task.id}
 
 
 @router.get("/{task_id}", response_model=Task)
