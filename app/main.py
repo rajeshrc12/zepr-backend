@@ -1,14 +1,49 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from app.models.task import Base
 from app.core.database import engine
 from app.routers.task import router as task_router
 from app.routers.user import router as user_router
+from app.routers.auth import router as auth_router
+from fastapi.responses import JSONResponse
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import settings
 
 # Create all tables at startup
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Zepr")
 
-# Register routers
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    if exc.status_code == 401:
+        # Clear token cookie when user is unauthorized
+        response = JSONResponse(
+            status_code=401,
+            content={"detail": exc.detail}
+        )
+        response.delete_cookie("token", path="/")
+        return response
+    # For other HTTP exceptions
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+# Session middleware
+app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
+
+# CORS middleware
+origins = [
+    settings.FRONTEND_URL     # production frontend
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,   # important to send cookies
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include routers
 app.include_router(task_router)
+app.include_router(auth_router)
 app.include_router(user_router)
