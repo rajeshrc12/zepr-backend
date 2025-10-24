@@ -1,11 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
 
 
 class TaskBase(BaseModel):
     name: str
     is_completed: bool = False
-    due_date: datetime = Field(default_factory=datetime.utcnow)
 
 
 class TaskCreate(TaskBase):
@@ -18,6 +17,7 @@ class TaskUpdate(TaskBase):
 
 class Task(TaskBase):
     id: int
+    due_date: datetime
 
     class Config:
         orm_mode = True
