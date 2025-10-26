@@ -6,6 +6,8 @@ from app.core.config import settings
 load_dotenv()
 
 engine = create_engine(settings.DATABASE_URL)
+engine_csv = create_engine(settings.DATABASE_CSV_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

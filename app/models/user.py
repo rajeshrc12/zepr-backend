@@ -15,3 +15,4 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.now(
         timezone.utc), nullable=False)
     connections = relationship("Connection", back_populates="owner")
+    csvs = relationship("Csv", back_populates="owner")
