@@ -16,3 +16,5 @@ class Chat(Base):
 
     owner = relationship("User", back_populates="chats")
     csv = relationship("Csv", back_populates="chats")
+
+    messages = relationship("Message", back_populates="owner")

@@ -22,7 +22,7 @@ oauth.register(
     }
 )
 
-router = APIRouter()
+router = APIRouter(tags=["Auth"])
 
 
 @router.get('/login')
