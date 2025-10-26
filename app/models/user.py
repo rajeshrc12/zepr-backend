@@ -16,3 +16,4 @@ class User(Base):
         timezone.utc), nullable=False)
     connections = relationship("Connection", back_populates="owner")
     csvs = relationship("Csv", back_populates="owner")
+    chats = relationship("Chat", back_populates="owner")

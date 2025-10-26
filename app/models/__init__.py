@@ -1,5 +1,5 @@
-from .task import *
-from .user import *
-from .connection import *
-from .csv import *
-# import other models here
+from app.models.task import *
+from app.models.user import *
+from app.models.connection import *
+from app.models.csv import *
+from app.models.chat import *

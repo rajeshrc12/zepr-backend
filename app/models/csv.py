@@ -17,3 +17,4 @@ class Csv(Base):
         timezone.utc), nullable=False)
     columns = Column(JSONB, nullable=True)
     owner = relationship("User", back_populates="csvs")
+    chats = relationship("Chat", back_populates="csv")

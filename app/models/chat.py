@@ -4,13 +4,15 @@ from datetime import datetime, timezone
 from app.core.database import Base
 
 
-class Connection(Base):
-    __tablename__ = "connections"
+class Chat(Base):
+    __tablename__ = "chats"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    type = Column(String, default=False)
+    csv_id = Column(Integer, ForeignKey("csvs.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.now(
         timezone.utc), nullable=False)
-    owner = relationship("User", back_populates="connections")
+
+    owner = relationship("User", back_populates="chats")
+    csv = relationship("Csv", back_populates="chats")

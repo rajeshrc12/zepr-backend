@@ -3,6 +3,7 @@ from app.routers.task import router as task_router
 from app.routers.user import router as user_router
 from app.routers.auth import router as auth_router
 from app.routers.connection import router as connection_router
+from app.routers.chat import router as chat_router
 from app.routers.csv import router as csv_router
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
@@ -46,3 +47,4 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(connection_router)
 app.include_router(csv_router)
+app.include_router(chat_router)
