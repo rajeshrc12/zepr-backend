@@ -2,23 +2,22 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 
-class UserBase(BaseModel):
+class ConnectionBase(BaseModel):
     name: str
-    email: str
-    image: str
+    type: str
+    user_id: int
 
 
-class UserCreate(UserBase):
+class ConnectionCreate(ConnectionBase):
     pass
 
 
-class UserUpdate(UserBase):
+class ConnectionUpdate(ConnectionBase):
     pass
 
 
-class User(UserBase):
+class Connection(ConnectionBase):
     id: int
     created_at: datetime
-    credits: int
 
     model_config = ConfigDict(from_attributes=True)

@@ -1,16 +1,12 @@
 from fastapi import FastAPI, HTTPException, Request
-from app.models.task import Base
-from app.core.database import engine
 from app.routers.task import router as task_router
 from app.routers.user import router as user_router
 from app.routers.auth import router as auth_router
+from app.routers.connection import router as connection_router
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-
-# Create all tables at startup
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Zepr")
 
@@ -47,3 +43,4 @@ app.add_middleware(
 app.include_router(task_router)
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(connection_router)

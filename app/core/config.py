@@ -6,12 +6,13 @@ load_dotenv()
 
 class Settings:
     ENV: str = os.getenv("ENV", "dev")
-    DATABASE_URL_DEV: str = os.getenv("DATABASE_URL_DEV", "sqlite:///./app.db")
-    DATABASE_CSV_URL_DEV: str = os.getenv(
+    _DATABASE_URL_DEV: str = os.getenv(
+        "DATABASE_URL_DEV", "sqlite:///./app.db")
+    _DATABASE_CSV_URL_DEV: str = os.getenv(
         "DATABASE_URL_DEV", "sqlite:///./csv.db")
 
-    DATABASE_URL: str = os.getenv("DATABASE_URL")
-    DATABASE_CSV_URL: str = os.getenv("DATABASE_CSV_URL")
+    _DATABASE_URL: str = os.getenv("DATABASE_URL")
+    _DATABASE_CSV_URL: str = os.getenv("DATABASE_CSV_URL")
 
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY")
     SESSION_SECRET_KEY: str = os.getenv("SESSION_SECRET_KEY")
@@ -23,16 +24,16 @@ class Settings:
     @property
     def DATABASE_URL(self) -> str:
         """Use SQLite for dev, or prod DB for production."""
-        if self.ENV == "prod" and self.DATABASE_URL:
-            return self.DATABASE_URL
-        return self.DATABASE_URL_DEV
+        if self.ENV == "prod" and self._DATABASE_URL:
+            return self._DATABASE_URL
+        return self._DATABASE_URL_DEV
 
     @property
     def DATABASE_CSV_URL(self) -> str:
         """Use SQLite for dev, or prod DB for production."""
-        if self.ENV == "prod" and self.DATABASE_CSV_URL:
-            return self.DATABASE_CSV_URL
-        return self.DATABASE_CSV_URL_DEV
+        if self.ENV == "prod" and self._DATABASE_CSV_URL:
+            return self._DATABASE_CSV_URL
+        return self._DATABASE_CSV_URL_DEV
 
 
 settings = Settings()
