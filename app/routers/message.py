@@ -1,16 +1,29 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.message import Message, MessageCreate, MessageUpdate
-from app.crud.message import create_message, get_messages, get_message, update_message, delete_message
-
+from app.schemas.message import Message, MessageBase, MessageUpdate
+from app.crud.message import get_messages, get_message, update_message, delete_message, create_messages
+from app.services.openai import llm
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 router = APIRouter(prefix="/message", tags=["Message"])
 
+messages = []
 
-@router.post("/", response_model=Message)
-def add_message(message: MessageCreate, db: Session = Depends(get_db)):
+
+@router.post("/")
+def add_message(message: MessageBase, db: Session = Depends(get_db)):
     """Create a new message"""
-    return create_message(db, message)
+    messages.append(HumanMessage(message.content))
+    response = llm.invoke(
+        [SystemMessage("You are AI Data Analyst")]+messages
+    )
+    messages.append(AIMessage(response.content))
+    db_messages = create_messages(
+        db, [
+            {"type": "human", "content": message.content, "chat_id": message.chat_id},
+            {"type": "ai", "content": response.content, "chat_id": message.chat_id}
+        ])
+    return db_messages
 
 
 @router.get("/", response_model=list[Message])

@@ -8,8 +8,9 @@ class Message(Base):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True)
-    text = Column(String, index=True)
-    chat_id = Column(Integer, ForeignKey("chats.id"))
+    content = Column(String, nullable=False)
+    type = Column(String, nullable=False)
+    chat_id = Column(Integer, ForeignKey("chats.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.now(
         timezone.utc), nullable=False)
     owner = relationship("Chat", back_populates="messages")

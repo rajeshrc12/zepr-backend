@@ -20,6 +20,8 @@ class Settings:
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
         os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 3600))
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL")
+    OPENAI_BASE_MODEL: str = os.getenv("OPENAI_BASE_MODEL")
 
     @property
     def DATABASE_URL(self) -> str:

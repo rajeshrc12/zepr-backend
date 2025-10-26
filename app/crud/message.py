@@ -19,6 +19,20 @@ def create_message(db: Session, message: MessageCreate):
     return db_message
 
 
+def create_messages(db: Session, messages: list[dict]):
+    db_messages = [Message(**msg) for msg in messages]
+
+    # Add all messages at once
+    db.add_all(db_messages)
+    db.commit()
+
+    # Refresh each to get generated fields (like id)
+    for msg in db_messages:
+        db.refresh(msg)
+
+    return db_messages
+
+
 def update_message(db: Session, message_id: int, message: MessageUpdate):
     db_message = get_message(db, message_id)
     if not db_message:
