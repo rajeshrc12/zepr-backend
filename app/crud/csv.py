@@ -6,8 +6,8 @@ from app.core.database import engine_csv
 from dateutil.parser import parse
 
 
-def get_csvs(db: Session):
-    return db.query(Csv).all()
+def get_csvs(db: Session, user_id: int):
+    return db.query(Csv).filter(Csv.user_id == user_id)
 
 
 def get_csv(db: Session, csv_id: int):
