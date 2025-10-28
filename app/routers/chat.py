@@ -1,16 +1,36 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.chat import Chat, ChatCreate, ChatUpdate
+from app.schemas.chat import Chat, ChatUpdate, ChatRequest, ChatBase
+from app.schemas.message import MessageCreate
 from app.crud.chat import create_chat, get_chats, get_chat, update_chat, delete_chat
+from app.crud.message import create_message
+from app.core.dependencies import get_current_user
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
 
 @router.post("/", response_model=Chat)
-def add_chat(chat: ChatCreate, db: Session = Depends(get_db)):
+def add_chat(chat_request: ChatRequest, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
     """Create a new chat"""
-    return create_chat(db, chat)
+    name = "Test chat"
+    csv_id = chat_request.csv_id
+    message = chat_request.message
+    chat_base = ChatBase(
+        name=name,
+        csv_id=csv_id,
+        user_id=user_id
+    )
+    chat = create_chat(db, chat_base)
+    chat_id = chat.id
+
+    message_create = MessageCreate(
+        type="human",
+        content=message,
+        chat_id=chat_id
+    )
+    create_message(db, message_create)
+    return chat
 
 
 @router.get("/", response_model=list[Chat])
