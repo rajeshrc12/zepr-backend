@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import Table, Integer, Float, Boolean, DateTime, MetaData
+from sqlalchemy import Table, Integer, Float, select, DateTime, MetaData
 from app.models.csv import Csv
 from app.schemas.csv import CsvUpdate, CsvCreate
 from app.core.database import engine_csv
@@ -58,6 +58,20 @@ def create_csv_table(details: Csv, data: dict, columns: dict):
     except Exception as e:
         print(str(e))
         return False
+
+
+def get_csv_table(csv_id: str):
+    try:
+        table_name = f"csv_{csv_id}"
+        # Query all data from that table
+        with Session(engine_csv) as session:
+            result = session.execute(select(table_name)).fetchall()
+
+        # Convert to list of dicts
+        rows = [dict(row._mapping) for row in result]
+        return rows
+    except:
+        return []
 
 
 def update_csv(db: Session, csv_id: int, csv: CsvUpdate):

@@ -1,27 +1,33 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.message import Message, MessageBase, MessageUpdate
+from app.schemas.message import Message, MessageRequest, MessageUpdate
 from app.crud.message import get_messages, get_message, update_message, delete_message, create_messages
 from app.services.openai import llm
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-router = APIRouter(prefix="/message", tags=["Message"])
+from app.utils.prompt import get_data_analyst_prompt
+from langchain_core.messages import HumanMessage, SystemMessage
 
-messages = []
+router = APIRouter(prefix="/message", tags=["Message"])
 
 
 @router.post("/")
-def add_message(message: MessageBase, db: Session = Depends(get_db)):
-    """Create a new message"""
-    messages.append(HumanMessage(message.content))
+def add_message(message_request: MessageRequest, db: Session = Depends(get_db)):
+    """Create a new message_request"""
+    content = message_request.content
+    chat_id = message_request.chat_id
+    csv = message_request.csv
+    system_prompt = get_data_analyst_prompt(csv)
+    print(system_prompt)
     response = llm.invoke(
-        [SystemMessage("You are AI Data Analyst")]+messages
+        [SystemMessage(system_prompt),
+         HumanMessage(content)]
     )
-    messages.append(AIMessage(response.content))
     db_messages = create_messages(
         db, [
-            {"type": "human", "content": message.content, "chat_id": message.chat_id},
-            {"type": "ai", "content": response.content, "chat_id": message.chat_id}
+            {"type": "human", "content": content,
+                "chat_id": chat_id},
+            {"type": "ai", "content": response.content,
+                "chat_id": chat_id}
         ])
     return db_messages
 

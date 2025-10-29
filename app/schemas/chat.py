@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from app.schemas.message import Message
+from app.schemas.csv import Csv
 
 
 class ChatBase(BaseModel):
@@ -26,4 +27,5 @@ class Chat(ChatBase):
     id: int
     created_at: datetime
     messages: list[Message]
+    csv: Csv
     model_config = ConfigDict(from_attributes=True)

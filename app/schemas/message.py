@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
+from app.schemas.csv import Csv
 
 
 class MessageBase(BaseModel):
@@ -9,6 +10,11 @@ class MessageBase(BaseModel):
 
 class MessageCreate(MessageBase):
     type: str
+    pass
+
+
+class MessageRequest(MessageBase):
+    csv: Csv
     pass
 
 
