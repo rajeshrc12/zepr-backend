@@ -1,10 +1,15 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from app.schemas.csv import Csv
+from typing import Optional
 
 
 class MessageBase(BaseModel):
     content: str
+    sql: Optional[str] = None
+    table: Optional[list] = None
+    chart: Optional[dict] = None
+    summary: Optional[str] = None
     chat_id: int
 
 

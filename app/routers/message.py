@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.schemas.message import Message, MessageRequest, MessageUpdate
-from app.crud.message import get_messages, get_message, update_message, delete_message, create_messages
-from app.services.openai import llm
+from app.schemas.message import Message, MessageRequest, MessageUpdate, MessageCreate
+from app.crud.message import get_messages, get_message, update_message, delete_message, create_messages, create_message
+from app.services.langgraph import chatbot
+from fastapi.responses import StreamingResponse
 from app.utils.prompt import get_data_analyst_prompt
 from langchain_core.messages import HumanMessage, SystemMessage
+from app.services.openai import llm
+import json
 
 router = APIRouter(prefix="/message", tags=["Message"])
 
@@ -30,6 +33,32 @@ def add_message(message_request: MessageRequest, db: Session = Depends(get_db)):
                 "chat_id": chat_id}
         ])
     return db_messages
+
+
+@router.get("/stream")
+async def stream_message(
+    chat_id: str = Query(...),
+    content: str = Query(...),
+    csv: str = Query(...),
+):
+    print(csv)
+
+    async def event_generator():
+        async for event in chatbot.astream({
+            "chat_id": chat_id,
+            "message": content,
+            "csv": json.loads(csv),
+            "query": "",
+            "content": "",
+            "sql": "",
+            "table": [],
+            "chart": {},
+            "summary": "",
+        }):
+            yield f"data: {json.dumps(event)}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @router.get("/", response_model=list[Message])

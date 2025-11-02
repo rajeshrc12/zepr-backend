@@ -37,7 +37,11 @@ def update_message(db: Session, message_id: int, message: MessageUpdate):
     db_message = get_message(db, message_id)
     if not db_message:
         return None
-    db_message.text = message.text
+    db_message.content = message.content
+    db_message.sql = message.sql
+    db_message.table = message.table
+    db_message.chart = message.chart
+    db_message.summary = message.summary
     db_message.chat_id = message.chat_id
     db.commit()
     db.refresh(db_message)
