@@ -3,6 +3,7 @@ from app.routers.user import router as user_router
 from app.routers.auth import router as auth_router
 from app.routers.connection import router as connection_router
 from app.routers.chat import router as chat_router
+from app.routers.chart import router as chart_router
 from app.routers.csv import router as csv_router
 from app.routers.message import router as message_router
 from fastapi.responses import JSONResponse
@@ -47,4 +48,5 @@ app.include_router(user_router)
 app.include_router(connection_router)
 app.include_router(csv_router)
 app.include_router(chat_router)
+app.include_router(chart_router)
 app.include_router(message_router)

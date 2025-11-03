@@ -4,3 +4,4 @@ from app.models.connection import *
 from app.models.csv import *
 from app.models.chat import *
 from app.models.message import *
+from app.models.chart import *
