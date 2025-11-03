@@ -34,9 +34,9 @@ def add_chat(chat_request: ChatRequest, user_id: int = Depends(get_current_user)
 
 
 @router.get("/", response_model=list[Chat])
-def read_chats(db: Session = Depends(get_db)):
+def read_chats(user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
     """Retrieve all chats"""
-    return get_chats(db)
+    return get_chats(db, user_id)
 
 
 @router.get("/{chat_id}", response_model=Chat)
