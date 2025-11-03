@@ -225,20 +225,21 @@ Instructions:
 3.Only generate chart types from the available options; do not create or suggest any others.
 
 Available chart types:
-1. Bar Chart
+1.Bar Chart
 - x_axis: must be a categorical value
 - y_axis: must be a numerical value
 - Example output: {{"type":"bar","x_axis":"key","y_axis":"key"}}
 
-2. Line Chart
+2.Line Chart
 - x_axis: must be a categorical value
 - y_axis: must be a numerical value
 - Example output: {{"type":"line","x_axis":"key","y_axis":"key"}}
 
-3. Category Chart
-- Use when all keys have categorical values
-- You can choose key with repetitive values as x_axis
-- Example output: {{"type":"category","x_axis":"key","y_axis":""}}
+2.Pie Chart
+- x_axis: must be a categorical value
+- y_axis: must be a numerical value
+- Example output: {{"type":"pie","x_axis":"key","y_axis":"key"}}
+
 """
     structured_llm = llm.bind_tools(
         [],
