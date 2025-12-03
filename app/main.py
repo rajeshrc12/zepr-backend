@@ -6,6 +6,7 @@ from app.routers.chat import router as chat_router
 from app.routers.chart import router as chart_router
 from app.routers.csv import router as csv_router
 from app.routers.message import router as message_router
+from app.routers.dashboard import router as dashboard_router
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
@@ -50,3 +51,4 @@ app.include_router(csv_router)
 app.include_router(chat_router)
 app.include_router(chart_router)
 app.include_router(message_router)
+app.include_router(dashboard_router)

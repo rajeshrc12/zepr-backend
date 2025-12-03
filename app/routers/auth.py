@@ -76,6 +76,5 @@ async def auth(request: Request, db: Session = Depends(get_db)):
         httponly=True,
         secure=True,
         samesite="lax",
-        max_age=3600
     )
     return response
