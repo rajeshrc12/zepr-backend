@@ -19,6 +19,9 @@ class MessageCreate(MessageBase):
 
 
 class MessageRequest(MessageBase):
+    csv_id: int
+    csv_columns: list[str]
+    csv_name: str
     pass
 
 

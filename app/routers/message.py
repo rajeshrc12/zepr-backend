@@ -18,8 +18,13 @@ def add_message(message_request: MessageRequest, db: Session = Depends(get_db)):
     """Create a new message_request"""
     content = message_request.content
     chat_id = message_request.chat_id
+    csv_id = message_request.csv_id
+    csv_columns = message_request.csv_columns
+    csv_name = message_request.csv_name
+    system_prompt = get_data_analyst_prompt(csv_columns, csv_name)
+    print(system_prompt)
     response = llm.invoke(
-        [SystemMessage("You are ai data analyst"),
+        [SystemMessage(system_prompt),
          HumanMessage(content)]
     )
     db_messages = create_messages(
