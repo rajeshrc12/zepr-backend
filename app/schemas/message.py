@@ -19,7 +19,6 @@ class MessageCreate(MessageBase):
 
 
 class MessageRequest(MessageBase):
-    csv: Csv
     pass
 
 

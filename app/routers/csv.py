@@ -2,36 +2,46 @@ from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.schemas.csv import Csv, CsvCreate
-from app.crud.csv import create_csv, create_csv_table, get_csvs
-from app.utils.csv import parse_csv, create_columns
+from app.crud.csv import create_csv, get_csvs
 from app.core.dependencies import get_current_user
-import json
+from app.services.gcp import upload_csv
+import pandas as pd
 
 router = APIRouter(
     prefix="/csv", tags=["Csv"])
 
 
-@router.post("/", response_model=Csv)
-async def add_csv(
-        data: str = Form(...),
+@router.post("/")
+def add_csv(
         file: UploadFile = File(...),
         db: Session = Depends(get_db),
         user_id: int = Depends(get_current_user)):
     """Create a new csv"""
-    data_dict = json.loads(data)
-    name = data_dict.get("name")
-    description = data_dict.get("description")
-    csv_data = await parse_csv(file)
-    csv_columns, csv_columns_info = create_columns(csv_data)
+    # Read CSV into pandas
+    df = pd.read_csv(file.file)
+
+    # Extract columns in array/list format
+    column_list = df.columns.tolist()
+
+    # Reset file pointer so upload function can read it again
+    file.file.seek(0)
+    print(column_list)
     csv_create = CsvCreate(
-        name=name,
-        description=description,
+        name=file.filename,
+        description=file.filename,
         file_name=file.filename,
-        user_id=user_id,
-        columns=csv_columns_info)
+        columns=column_list,   # ← assign list of column names
+        user_id=user_id
+    )
     csv_details = create_csv(db, csv_create)
-    create_csv_table(csv_details, csv_data, csv_columns)
-    return csv_details
+    dest_name = f"csv_uploads/{user_id}/{csv_details.id}.csv"
+
+    # Step 3 — Upload CSV to GCS
+    upload_result = upload_csv(file, dest_name)
+    return {
+        "csv": csv_details,
+        "upload": upload_result,
+    }
 
 
 @router.get("/", response_model=list[Csv])

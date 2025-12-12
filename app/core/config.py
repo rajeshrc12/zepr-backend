@@ -22,6 +22,9 @@ class Settings:
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
     OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL")
     OPENAI_BASE_MODEL: str = os.getenv("OPENAI_BASE_MODEL")
+    GOOGLE_BUCKET_NAME: str = os.getenv("GOOGLE_BUCKET_NAME")
+    GOOGLE_APPLICATION_CREDENTIALS_JSON: str = os.getenv(
+        "GOOGLE_APPLICATION_CREDENTIALS_JSON")
 
     @property
     def DATABASE_URL(self) -> str:

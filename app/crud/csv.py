@@ -7,7 +7,7 @@ from dateutil.parser import parse
 
 
 def get_csvs(db: Session, user_id: int):
-    return db.query(Csv).filter(Csv.user_id == user_id)
+    return db.query(Csv).filter(Csv.user_id == user_id).order_by(Csv.created_at.desc()).all()
 
 
 def get_csv(db: Session, csv_id: int):

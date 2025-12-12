@@ -7,7 +7,7 @@ class CsvBase(BaseModel):
     name: str
     file_name: str
     description: str
-    columns: Optional[List[Dict[str, str]]] = None
+    columns: Optional[List[str]] = None
     user_id: int
 
 
