@@ -9,32 +9,32 @@ from app.utils.prompt import get_data_analyst_prompt
 from langchain_core.messages import HumanMessage, SystemMessage
 from app.services.openai import llm
 import json
+from app.core.dependencies import get_current_user
+from app.services.agent import chatbot
+from app.services.python_sandbox import execute_code
 
 router = APIRouter(prefix="/message", tags=["Message"])
 
 
 @router.post("/")
-def add_message(message_request: MessageRequest, db: Session = Depends(get_db)):
+def add_message(message_request: MessageRequest, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
     """Create a new message_request"""
-    content = message_request.content
+    user_query = message_request.content
     chat_id = message_request.chat_id
     csv_id = message_request.csv_id
     csv_columns = message_request.csv_columns
     csv_name = message_request.csv_name
-    system_prompt = get_data_analyst_prompt(csv_columns, csv_name)
-    print(system_prompt)
-    response = llm.invoke(
-        [SystemMessage(system_prompt),
-         HumanMessage(content)]
-    )
-    db_messages = create_messages(
-        db, [
-            {"type": "human", "content": content,
-                "chat_id": chat_id},
-            {"type": "ai", "content": response.content,
-                "chat_id": chat_id}
-        ])
-    return db_messages
+    result = chatbot.invoke({
+        "chat_id": chat_id,
+        "user_query": user_query,
+        "user_id": user_id,
+        "csv_id": csv_id,
+        "csv_columns": csv_columns,
+        "csv_name": csv_name,
+        "response": {},
+        "output": []
+    })
+    return result
 
 
 @router.get("/stream")

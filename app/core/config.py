@@ -23,6 +23,8 @@ class Settings:
     OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL")
     OPENAI_BASE_MODEL: str = os.getenv("OPENAI_BASE_MODEL")
     GOOGLE_BUCKET_NAME: str = os.getenv("GOOGLE_BUCKET_NAME")
+    GOOGLE_BUCKET_CSV_FOLDER_NAME: str = os.getenv(
+        "GOOGLE_BUCKET_CSV_FOLDER_NAME")
     GOOGLE_APPLICATION_CREDENTIALS_JSON: str = os.getenv(
         "GOOGLE_APPLICATION_CREDENTIALS_JSON")
 
